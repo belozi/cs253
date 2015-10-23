@@ -1,55 +1,49 @@
 import webapp2
-import string
+import cgi
+import halp
 
 form = '''
-<form method="post" action="/Coded">
-    <input type="textarea" name="code" value="">
-    <input type="submit">
-</form>
-'''
+ <html>
+  <head>
+    <title>Unit 2 Rot 13</title>
+  </head>
 
-message = "Hello, everyone! What are your names?"
+  <body>
+    <h2>Enter some text to ROT13:</h2>
+    <form method="get" action="/coded">
+      <textarea name="text"
+                style="height: 100px; width: 400px;">%(code)s</textarea>
+      <br>
+      <input type="submit">
+    </form>
+  </body>
+ </html>
+'''
 
 
 
 class MainPage(webapp2.RequestHandler):
+    def write_form(self, code=""):
+        self.response.out.write(form % {"code": cgi.escape(code)})
+
     def get(self):
-        self.response.headers['Content-Type'] = 'text/html'
-        self.response.write(form)
+        self.write_form()
 
 class Coded(webapp2.RequestHandler):
-    def post(self):
-        code = slef.request.get("code")
-        
-    def shift(char):
-    # This is the 13 character shift for each character
-        ascii = ord(char) + 13
-        if  ascii > 122:
-            char = chr((97 + (ascii - 123)))
-            return char
-        
-        return chr((ord(char) + 13))
 
-    def convert(text):
-    # This is the method that converts the message
-        code = []
-        for char in text:
-            cap = False
-        
-            if char in string.uppercase:
-                cap = True
-                new_char = shift(char.lower())
-                code.append(chr(ord(new_char) - 32))
-            elif char in string.lowercase:
-                code.append(shift(char))
-            else:
-                code.append(char)
+    def get(self):
+        code = halp.convert(self.request.get("text"))
+        self.response.out.write(form % { "code": code })
 
-        return ''.join(code)
-    
+'''
+    def write_form(self, code=''):
+
+        code = halp.convert(code)
+        self.response.out.write(form % {"code": cgi.escape(code)})
+
+'''
+
 app = webapp2.WSGIApplication([
-    ('/', Mainpage),
+    ('/', MainPage),
     ('/coded', Coded),
     ], debug = True)
-
-print convert(message)
