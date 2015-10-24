@@ -6,7 +6,7 @@ def shift(char):
     if  ascii > 122:
         char = chr((97 + (ascii - 123)))
         return char
-    
+
     return chr((ord(char) + 13))
 
 def convert(text):
@@ -14,7 +14,7 @@ def convert(text):
     code = []
     for char in text:
         cap = False
-    
+
         if char in string.uppercase:
             cap = True
             new_char = shift(char.lower())
